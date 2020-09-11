@@ -13,6 +13,8 @@ import Home from './HomeComponent'
 import Contact from './ContactComponent'
 import About from './AboutComponent'
 import Reservation from './ReservationComponent';
+import Favorite from './FavoriteComponent';
+
 
 const mapStateToProps = state => {
     return {
@@ -194,6 +196,36 @@ function AboutNavigatorScreen({ navigation }) {
     );
 }
 
+const FavoriteNavigator = createStackNavigator();
+
+function FavoriteNavigatorScreen({ navigation }) {
+    return(
+        <FavoriteNavigator.Navigator
+            initialRouteName='Favorite'
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: "#0e3013"
+                },
+                headerTintColor: "#fff",
+                headerTitleStyle: {
+                    color: "#fff"            
+                }
+            }}
+        >
+            <FavoriteNavigator.Screen
+                name="Favorite"
+                component={Favorite}
+                options={
+                    ({navigation}) => ({
+                        headerLeft: () => <MenuIcon navigation={navigation}/>,
+                        headerTitle: "My Favorites"
+                    })
+                }
+            />         
+        </FavoriteNavigator.Navigator>
+    );
+}
+
 const CustomDrawerContentComponent = (props) => (
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
@@ -221,6 +253,7 @@ function MainNavigator({ navigation }) {
           <Drawer.Screen name="Menu" component={MenuNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='list' type='font-awesome' size={24} color={tintColor}/>)}}/>
           <Drawer.Screen name="Contact" component={ContactNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='address-card' type='font-awesome' size={22} color={tintColor}/>), drawerLabel: 'Contact Us'}}/>
 		  <Drawer.Screen name="Reservation" component={ReservationNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='cutlery' type='font-awesome' size={22} color={tintColor}/>), drawerLabel: 'Reservation'}}/>
+          <Drawer.Screen name="Favorite" component={FavoriteNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='info-circle' type='font-awesome' size={22} color={tintColor}/>), drawerLabel: 'My Favorites'}}/>
         </Drawer.Navigator>
 
     );
