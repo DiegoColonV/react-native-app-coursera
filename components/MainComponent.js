@@ -14,6 +14,8 @@ import Contact from './ContactComponent'
 import About from './AboutComponent'
 import Reservation from './ReservationComponent';
 import Favorite from './FavoriteComponent';
+import Login from './LoginComponent';
+
 
 
 const mapStateToProps = state => {
@@ -76,6 +78,36 @@ function MenuNavigatorScreen() {
                 options={{ headerTitle: "Dish Detail"}}
             />            
         </MenuNavigator.Navigator>
+    );
+}
+
+
+const LoginNavigator = createStackNavigator();
+
+function LoginNavigatorScreen({ navigation }) {
+    return(
+        <LoginNavigator.Navigator
+            initialRouteName='Login'
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: "#0e3013"
+                },
+                headerTintColor: "#fff",
+                headerTitleStyle: {
+                    color: "#fff"            
+                }
+            }}
+        >
+            <LoginNavigator.Screen
+                name="Login"
+                component={Login}
+                options={
+                    ({navigation}) => ({
+                        headerLeft: () => <MenuIcon navigation={navigation}/>
+                    })
+                }
+            />         
+        </LoginNavigator.Navigator>
     );
 }
 
@@ -249,6 +281,7 @@ function MainNavigator({ navigation }) {
 
         <Drawer.Navigator initialRouteName="Home" drawerStyle ={{backgroundColor: '#e8e8e9'}} drawerContent = {(props) => <CustomDrawerContentComponent {...props} />}>
           <Drawer.Screen name="Home" component={HomeNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='home' type='font-awesome' size={24} color={tintColor}/>)}}/>
+          <Drawer.Screen name="Login" component={LoginNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='sign-in' type='font-awesome' size={24} color={tintColor}/>)}}/>
           <Drawer.Screen name="About" component={AboutNavigatorScreen} options={{drawerIcon: ({ tintColor, focused}) => (<Icon name='info-circle' type='font-awesome' size={24} color={tintColor}/>), drawerLabel: 'About Us'}}/>
           <Drawer.Screen name="Menu" component={MenuNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='list' type='font-awesome' size={24} color={tintColor}/>)}}/>
           <Drawer.Screen name="Contact" component={ContactNavigatorScreen} options={{drawerIcon: ({ tintColor, focused }) => (<Icon name='address-card' type='font-awesome' size={22} color={tintColor}/>), drawerLabel: 'Contact Us'}}/>
