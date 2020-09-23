@@ -91,31 +91,41 @@ class Reservation extends Component {
         });
     }
 
-    async obtainDefaultCalendarId() {
-        let calendar = null;
-        if (Platform.OS === 'ios') {
-          // ios: get default calendar
-          calendar = await Calendar.getDefaultCalendarAsync();
-        } else {
-          // Android: find calendar with `isPrimary` == true
-          const calendars = await Calendar.getCalendarsAsync();
-          calendar = (calendars) ?
-            (calendars.find(cal => cal.isPrimary) || calendars[0])
-            : null;
-        }
-        return (calendar) ? calendar.id : null;
+    getDefaultCalendarSource = async () => {
+        const calendars = await Calendar.getCalendarsAsync()
+        const defaultCalendars = calendars.filter(each => each.source.name === 'Default')
+        return defaultCalendars[0].source
     }
 
-    async addReservationToCalendar(date) {
-        await this.obtainCalendarPermission();
-        const calendar = await this.obtainDefaultCalendarId();
-        Calendar.createEventAsync(calendar,{
+    addReservationToCalendar = async ( date ) => {
+        await this.obtainCalendarPermission()
+
+        const defaultCalendarSource = Platform.OS === 'ios' ?
+            await getDefaultCalendarSource()
+            : { isLocalAccount: true, name: 'Expo Calendar' };
+
+        const tempDate = Date.parse(date)
+        const startDate = new Date(tempDate)
+        const endDate = new Date(tempDate + 2 * 60 * 60 * 1000)
+
+        const calendarID = await Calendar.createCalendarAsync({
+            title: 'Expo Calendar',
+            color: 'blue',
+            entityType: Calendar.EntityTypes.EVENT,
+            sourceId: defaultCalendarSource.id,
+            source: defaultCalendarSource,
+            name: 'internalCalendarName',
+            ownerAccount: 'personal',
+            accessLevel: Calendar.CalendarAccessLevel.OWNER,
+        })
+
+        await Calendar.createEventAsync(calendarID, {
             title: 'Con Fusion Table Reservation',
-            startDate: Date(Date.parse(date)),
-            endDate: Date((Date.parse(date))*2*60*60*1000),
+            startDate: startDate,
+            endDate: endDate,
             timeZone: 'Asia/Hong_Kong',
             location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
-        });
+        })
     }
     
     render() {
